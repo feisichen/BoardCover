@@ -63,7 +63,10 @@ int main(int argc, char* argv[])
         BoardCover(board, 0, k - 1, 0, k - 1, k);
         for (int i = 0; i < k; i++) {
             for (int j = 0; j < k; j++) {
-                cout << board[i][j] << '\t';
+                if (board[i][j] != 0)
+                    cout << board[i][j] << '\t';
+                else
+                    cout << '#' << '\t';
             }
             cout << endl;
         }
