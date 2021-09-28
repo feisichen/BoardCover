@@ -1,7 +1,19 @@
 ﻿#include <iostream>
-#include <vector>
-#include <iomanip>
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/utils/logger.hpp>
+#include <math.h>
+
 using namespace std;
+
+void setPixel(cv::Mat& background, int x0, int y0, int x1, int y1, int x, int y, int z) {
+    for (int i = x0; i <= x1; i++) {
+        for (int j = y0; j <= y1; j++) {
+            background.ptr<uchar>(j, i)[0] = x;
+            background.ptr<uchar>(j, i)[1] = y;
+            background.ptr<uchar>(j, i)[2] = z;
+        }
+    }
+}
 
 void BoardCover(int** board, int x0, int x1, int y0, int y1, int size) {
     if (x0 == x1)
@@ -43,35 +55,48 @@ void BoardCover(int** board, int x0, int x1, int y0, int y1, int size) {
 }
 int main(int argc, char* argv[])
 {
+    cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
+    cv::namedWindow("Image1");
+    int height = 721;
+    int width = 721;
+    cv::Mat image1(height, width, CV_8UC3, (0, 0, 0));
     int k0, k, x, y;
-    while (1) {
-        cin >> k0 >> x >> y;
-        k = 2 << (k0 - 1);
-        int** board;
-        board = new int* [k + 1];
-        for (int i = 0; i < k; i++) {
-            board[i] = new int[k];
+    cin >> k0 >> x >> y;
+    k = 2 << (k0 - 1);
+    int** board;
+    board = new int* [k + 1];
+    for (int i = 0; i < k; i++) {
+        board[i] = new int[k];
+    }
+    board[k] = new int[1];
+    board[k][0] = 0;
+    for (int i = 0; i < k; i++) {
+        for (int j = 0; j < k; j++) {
+            board[i][j] = -1;
         }
-        board[k] = new int[1];
-        board[k][0] = 0;
-        for (int i = 0; i < k; i++) {
-            for (int j = 0; j < k; j++) {
-                board[i][j] = -1;
-            }
+    }
+    board[x - 1][y - 1] = 0;
+    BoardCover(board, 0, k - 1, 0, k - 1, k);
+    int row = 721 / k;
+    int col = 721 / k;
+    int color = 255 / board[k][0];
+    for (int i = 0; i < k; i++) {
+        for (int j = 0; j < k; j++) {
+            if (board[i][j] != 0)
+                cout << board[i][j] << '\t';
+            else
+                cout << '#' << '\t';
         }
-        board[x - 1][y - 1] = 0;
-        BoardCover(board, 0, k - 1, 0, k - 1, k);
-        for (int i = 0; i < k; i++) {
-            for (int j = 0; j < k; j++) {
-                if (board[i][j] != 0)
-                    cout << board[i][j] << '\t';
-                else
-                    cout << '#' << '\t';
-            }
-            cout << endl;
-        }
-        delete[] board;
         cout << endl;
     }
+    for (int i = 0; i < k; i++) {
+        for (int j = 0; j < k; j++) {
+            setPixel(image1, j * col, i * row, (j + 1) * col, (i + 1) * row, color * board[i][j], color * (abs((board[k][0] / 2 - board[i][j]))), color * (board[k][0] - board[i][j]));
+        }
+    }
+    cv::imshow("Image1", image1);
+    cv::waitKey(0);
+    delete[] board;
+    cout << endl;
     return 0;
 }
