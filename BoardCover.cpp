@@ -14,8 +14,32 @@ void setPixel(cv::Mat& background, int x0, int y0, int x1, int y1, int x, int y,
         }
     }
 }
-
 void BoardCover(int** board, int x0, int x1, int y0, int y1, int size) {
+    if (x0 == x1)
+    {
+        return;
+    }
+    int tempx = (x0 + x1) / 2;
+    int tempy = (y0 + y1) / 2;
+    int t = ++board[size][0];
+    if (board[x0][y0] == -1) {
+        board[tempx][tempy] = t;
+    }
+    if (board[x1][y0] == -1) {
+        board[tempx + 1][tempy] = t;
+    }
+    if (board[x0][y1] == -1) {
+        board[tempx][tempy + 1] = t;
+    }
+    if (board[x1][y1] == -1) {
+        board[tempx + 1][tempy + 1] = t;
+    }
+    BoardCover(board, x0, tempx, y0, tempy, size);
+    BoardCover(board, x0, tempx, tempy + 1, y1, size);
+    BoardCover(board, tempx + 1, x1, y0, tempy, size);
+    BoardCover(board, tempx + 1, x1, tempy + 1, y1, size);
+}
+void BoardCover(int** board, int X, int Y, int x0, int x1, int y0, int y1, int size) {
     if (x0 == x1)
     {
         return;
@@ -24,35 +48,42 @@ void BoardCover(int** board, int x0, int x1, int y0, int y1, int size) {
     int tempy = (y0 + y1) / 2;
     int x, y;
     int t = ++board[size][0];
-    for (int i = x0; i <= x1; ++i) {
-        for (int j = y0; j <= y1; ++j) {
-            if (board[i][j] != -1) {
-                x = (i - x0) < (x1 - i) ? tempx : tempx + 1;
-                y = (j - y0) < (y1 - j) ? tempy : tempy + 1;
-            }
-        }
-    }
+    x = (X - x0) < (x1 - X) ? tempx : tempx + 1;
+    y = (Y - y0) < (y1 - Y) ? tempy : tempy + 1;
     if (tempx != x || tempy != y)
     {
         board[tempx][tempy] = t;
+        BoardCover(board, x0, tempx, y0, tempy, size);
+    }
+    else {
+        BoardCover(board, X, Y, x0, tempx, y0, tempy, size);
     }
     if (tempx + 1 != x || tempy != y)
     {
         board[tempx + 1][tempy] = t;
+        BoardCover(board, tempx + 1, x1, y0, tempy, size);
+    }
+    else {
+        BoardCover(board, X, Y, tempx + 1, x1, y0, tempy, size);
     }
     if (tempx != x || tempy + 1 != y)
     {
         board[tempx][tempy + 1] = t;
+        BoardCover(board, x0, tempx, tempy + 1, y1, size);
+    }
+    else {
+        BoardCover(board, X, Y, x0, tempx, tempy + 1, y1, size);
     }
     if (tempx + 1 != x || tempy + 1 != y)
     {
         board[tempx + 1][tempy + 1] = t;
+        BoardCover(board, tempx + 1, x1, tempy + 1, y1, size);
     }
-    BoardCover(board, x0, tempx, y0, tempy, size);
-    BoardCover(board, x0, tempx, tempy + 1, y1, size);
-    BoardCover(board, tempx + 1, x1, y0, tempy, size);
-    BoardCover(board, tempx + 1, x1, tempy + 1, y1, size);
+    else {
+        BoardCover(board, X, Y, tempx + 1, x1, tempy + 1, y1, size);
+    }
 }
+
 int main(int argc, char* argv[])
 {
     cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
@@ -76,7 +107,7 @@ int main(int argc, char* argv[])
         }
     }
     board[x - 1][y - 1] = 0;
-    BoardCover(board, 0, k - 1, 0, k - 1, k);
+    BoardCover(board, x - 1, y - 1, 0, k - 1, 0, k - 1, k);
     int row = 721 / k;
     int col = 721 / k;
     int color = 255 / board[k][0];
