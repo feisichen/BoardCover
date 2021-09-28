@@ -1,2 +1,2 @@
 ﻿  BoardCover.cpp
-  BoardCover.vcxproj -> D:\code\C\BoardCover\Debug\BoardCover.exe
+D:\code\C\BoardCover\BoardCover.cpp(2,10): fatal error C1083: 无法打开包括文件: “opencv2/opencv.hpp”: No such file or directory
