@@ -15,8 +15,11 @@ void setPixel(cv::Mat& background, int x0, int y0, int x1, int y1, int x, int y,
         }
     }
 }
+<<<<<<< HEAD
 
 //棋盘覆盖的算法
+=======
+>>>>>>> 48773d11903fe57e3d0b30fe67e61705341ca5f4
 void BoardCover(int** board, int x0, int x1, int y0, int y1, int size) {
     if (x0 == x1)
     {
@@ -42,8 +45,11 @@ void BoardCover(int** board, int x0, int x1, int y0, int y1, int size) {
     BoardCover(board, tempx + 1, x1, y0, tempy, size);
     BoardCover(board, tempx + 1, x1, tempy + 1, y1, size);
 }
+<<<<<<< HEAD
 
 //重载的棋盘覆盖算法
+=======
+>>>>>>> 48773d11903fe57e3d0b30fe67e61705341ca5f4
 void BoardCover(int** board, int X, int Y, int x0, int x1, int y0, int y1, int size) {
     if (x0 == x1)
     {
@@ -89,7 +95,10 @@ void BoardCover(int** board, int X, int Y, int x0, int x1, int y0, int y1, int s
     }
 }
 
+<<<<<<< HEAD
 //主函数
+=======
+>>>>>>> 48773d11903fe57e3d0b30fe67e61705341ca5f4
 int main(int argc, char* argv[])
 {
     cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
@@ -115,7 +124,10 @@ int main(int argc, char* argv[])
     }
     board[x - 1][y - 1] = 0;
     BoardCover(board, x - 1, y - 1, 0, k - 1, 0, k - 1, k);
+<<<<<<< HEAD
     cout << "运行结果" << endl;
+=======
+>>>>>>> 48773d11903fe57e3d0b30fe67e61705341ca5f4
     int row = 721 / k;
     int col = 721 / k;
     int color = 255 / board[k][0];
